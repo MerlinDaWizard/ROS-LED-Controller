@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(led_locator)
+project(neopixel_controller)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -51,15 +51,12 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Num.msg
-  LEDdata.msg
+  LEDcommand.msg
 )
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  AddTwoInts.srv
-  GetLEDCount.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -166,10 +163,10 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/talker.py
   scripts/angular_talker.py
-  scripts/listener.py
+  scripts/listenerOOP.py
   scripts/filler.py
-  scripts/add_two_ints_server.py
-  scripts/add_two_ints_client.py
+  # scripts/add_two_ints_server.py
+  # scripts/add_two_ints_client.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
