@@ -43,9 +43,9 @@ def recievePose(turtlePose):
     #print(formerLED)
     #print(led)
     
-    pubIndivLED.publish(led,LEDcommand.GREEN,50)
+    pubIndivLED.publish(led,LEDcommand.GREEN,50,False)
     if formerLED < ledCount: # Stops a crash with listener on startup due to sneding a publish with >= ledCount, will make fix here and TODO make listener ignore calls that would crash it 
-        pubIndivLED.publish(formerLED,LEDcommand.GREEN,0)
+        pubIndivLED.publish(formerLED,LEDcommand.GREEN,0,True)
     formerLED = led
 
 def angleToLED(angle, ledCount): # Assuming perfect circle etc etc.
