@@ -24,7 +24,7 @@ class LEDcontroller():
         return newColour
 
     def channelFill(self, channel, level): # Optimises when filling instead of iterating through all using default setting method
-        for i in range(self.LEDs._pixels):
+              for i in range(self.LEDs._pixels):
             LED = self.LEDs[i]
             newColour = self.getNewColour(LED, channel, level)
             self.LEDs._set_item(i,newColour[0],newColour[1],newColour[2],0)
