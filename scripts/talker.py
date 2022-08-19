@@ -20,7 +20,7 @@ def talker():
 
     pub = rospy.Publisher('multichannel_set_led', LEDcommand, queue_size=10)
     rospy.init_node('randomSet', anonymous=True)
-    rate = rospy.Rate(2)
+    rate = rospy.Rate(30)
     
     while not rospy.is_shutdown():
         #print(f"Active subscribers = {pub.getActiveSubscribers()}")

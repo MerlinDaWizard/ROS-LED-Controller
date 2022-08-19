@@ -2,6 +2,7 @@ import board
 import neopixel
 import sys
 import rospy
+import time
 
 from std_msgs.msg import String, ColorRGBA
 from neopixel_controller.msg import LEDcommand
@@ -9,7 +10,7 @@ from neopixel_controller.msg import LEDcommand
 
 class LEDcontroller():
     def __init__(self, ledCount: int, pin) -> None:
-        self.LEDs = neopixel.NeoPixel(pin, ledCount)
+        self.LEDs = neopixel.NeoPixel(pin, ledCount, auto_write = False)
         rospy.set_param('neopixel_controller/led_count', ledCount)
         rospy.init_node('ledListener', anonymous=False)
         rospy.Subscriber('multichannel_set_led', LEDcommand, self.channelSetLED)
@@ -24,7 +25,7 @@ class LEDcontroller():
         return newColour
 
     def channelFill(self, channel, level): # Optimises when filling instead of iterating through all using default setting method
-              for i in range(self.LEDs._pixels):
+        for i in range(self.LEDs._pixels):
             LED = self.LEDs[i]
             newColour = self.getNewColour(LED, channel, level)
             self.LEDs._set_item(i,newColour[0],newColour[1],newColour[2],0)
@@ -39,10 +40,12 @@ class LEDcontroller():
             self.channelFill(channel, level)
             rospy.loginfo(f"{rospy.get_caller_id()}, Filled!")
             return
-        
-        self.LEDs[ledIndex] = self.getNewColour(self.LEDs[ledIndex], channel, level) 
+        r, g, b, w = self.LEDs._parse_color(self.getNewColour(self.LEDs[ledIndex], channel, level))
+        self.LEDs._set_item(ledIndex, r, g, b, w)
+        if (LEDcommand.show):
+            self.LEDs.show()
+        #self.LEDs[ledIndex] = self.getNewColour(self.LEDs[ledIndex], channel, level) 
         rospy.loginfo(f"{rospy.get_caller_id()}, LED Index: {ledIndex}, Channel: {channel}, Level: {level}")
-
 def validateLEDAmount(ledAmount: int):
     if ledAmount is None:
         return f"That is an invalid LED amount [{num}]"

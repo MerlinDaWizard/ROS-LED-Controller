@@ -12,3 +12,4 @@ uint8 ALLCHANNELS = 255
 uint16 led_index
 uint8 channel
 uint8 level
+bool show

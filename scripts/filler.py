@@ -19,7 +19,7 @@ def filler():
             exit()
         rospy.loginfo(f"Filling with {RGB}")
         for channel, value in enumerate(RGB):
-            pub.publish(LEDcommand.ALLLEDS, channel, value)
+            pub.publish(LEDcommand.ALLLEDS, channel, value, True)
 
 if __name__ == '__main__':
     try:
