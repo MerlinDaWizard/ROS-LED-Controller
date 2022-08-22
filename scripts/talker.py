@@ -26,7 +26,7 @@ def talker():
         #print(f"Active subscribers = {pub.getActiveSubscribers()}")
         count = randint(0,ledCount-1)
         rospy.loginfo(f"Tried setting LED at index {count}")
-        pub.publish(count,randint(0,2),20)
+        pub.publish(count,randint(0,2),20, True)
         #count = (count + 1) % 10
         rate.sleep()
 

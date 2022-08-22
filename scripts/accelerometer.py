@@ -33,7 +33,7 @@ class VelocityDisplay():
             return
         brightness = int(math.sqrt((linearAccel.y*linearAccel.y) + (linearAccel.x*linearAccel.x)) * 20)
         print(brightness)
-        if brightness < 40:
+        if brightness < 10:
             brightness = 0
         brightness = min(brightness,255)    
         self.pub.publish(ledIndex,LEDcommand.GREEN,brightness,False)

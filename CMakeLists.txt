@@ -166,6 +166,7 @@ catkin_install_python(PROGRAMS
   scripts/listenerOOP.py
   scripts/filler.py
   scripts/accelerometer.py
+  scripts/hold_north.py
   # scripts/add_two_ints_server.py
   # scripts/add_two_ints_client.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
