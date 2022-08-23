@@ -35,17 +35,39 @@ class LEDcontroller():
         ledIndex = LEDcommand.led_index
         channel = LEDcommand.channel
         level = LEDcommand.level
+        # Checking LEDs not out of range - Will pass gracefully
+        if ledIndex > (self.LEDs._pixels - 1):
+            rospy.logerr(f"{rospy.get_caller_id()} Tried to set LED {ledIndex+1} when we only have {self.LEDs._pixels} available")
+            return
+
+        if ledIndex < 0:
+            rospy.logerr(f"{rospy.get_caller_id()} Tried to set LED {ledIndex+1}, which doesn't exist") 
+            return
 
         if (ledIndex == LEDcommand.ALLLEDS): # Will attempt to map the colour to all LEDS for that specific channel
             self.channelFill(channel, level)
             rospy.loginfo(f"{rospy.get_caller_id()}, Filled!")
             return
+        
         r, g, b, w = self.LEDs._parse_color(self.getNewColour(self.LEDs[ledIndex], channel, level))
         self.LEDs._set_item(ledIndex, r, g, b, w)
         if (LEDcommand.show):
             self.LEDs.show()
         #self.LEDs[ledIndex] = self.getNewColour(self.LEDs[ledIndex], channel, level) 
         rospy.loginfo(f"{rospy.get_caller_id()}, LED Index: {ledIndex}, Channel: {channel}, Level: {level}")
+        
+    def channelGradientManager(self, GradientMsg): # TODO: make it work.
+        sideSize = GradientMsg.side_size
+        highest = GradientMsg.origin_level
+        idx = GradientMsg.origin_index
+        channel = GradientMsg.channel
+        self.LEDs[idx] = 
+        r, g, b, w = self.LEDs._parse_color(self.getNewColour(self.LEDs[idx], channel, highest))
+        self.LEDs._set_item(idx, r, g, b, w)
+        for i in range(1,sideSize+1):
+            brightness = (i/sideSize+1)*highest
+            
+            
 def validateLEDAmount(ledAmount: int):
     if ledAmount is None:
         return f"That is an invalid LED amount [{num}]"
