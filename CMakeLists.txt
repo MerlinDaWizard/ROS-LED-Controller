@@ -163,7 +163,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/talker.py
   scripts/angular_talker.py
-  scripts/listenerOOP.py
+  scripts/listener.py
   scripts/filler.py
   scripts/accelerometer.py
   scripts/hold_north.py

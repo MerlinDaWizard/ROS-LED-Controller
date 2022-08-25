@@ -15,7 +15,7 @@ class LEDcontroller():
         rospy.set_param('neopixel_controller/led_count', ledCount)
         rospy.init_node('ledListener', anonymous=False)
         rospy.Subscriber('multichannel_set_led', LEDcommand, self.channelSetLED)
-        rospy.info("Started listener...")
+        rospy.loginfo("Started listener...")
         #rospy.Subscriber('fillLEDs', ColorRGBA, fillLEDs)
 
     def getNewColour(self, old_colour: tuple, channel: int, level: int) -> tuple:
@@ -55,12 +55,12 @@ class LEDcontroller():
             rospy.loginfo(f"{rospy.get_caller_id()}, Filled!")
             return
         
-        r, g, b, w = self.LEDs._parse_color(self.getNewColour(self.LEDs[ledIndex], channel, level))
-        self.LEDs._set_item(ledIndex, r, g, b, w)
+        r, g, b, w = self.LEDs._parse_color(self.getNewColour(self.LEDs[led_idx], channel, level))
+        self.LEDs._set_item(led_idx, r, g, b, w)
         if (LEDcommand.show):
             self.LEDs.show()
         #self.LEDs[ledIndex] = self.getNewColour(self.LEDs[ledIndex], channel, level) 
-        rospy.loginfo(f"{rospy.get_caller_id()}, LED Index: {ledIndex}, Channel: {channel}, Level: {level}")
+        rospy.loginfo(f"{rospy.get_caller_id()}, LED Index: {led_idx}, Channel: {channel}, Level: {level}")
         
     def gamma_lookup(self, level: int) -> int:
         '''Adjusts for the human eye's perception of colours, values below 28 will get cut off'''
