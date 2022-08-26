@@ -27,8 +27,3 @@ To apply to all channels use LEDcontroller.ALLCHANNELS as the channel
 (LEDcontroller.RED, LEDcontroller.GREEN, LEDcontroller.BLUE also exist and just are 0,1,2 respectively)
 
 Both of those sentinal values combined can be used to easily clear the LEDs.
-
-### Contributing
-If you have any idea how to improve the package or get sick of my bad code feel free to submit a pull request, it will most likely be accepted :)
-
-All contributions are under the MIT license.
