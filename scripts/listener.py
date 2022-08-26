@@ -35,7 +35,9 @@ class LEDcontroller():
             LED = self.LEDs[i]
             new_colour = self.getNewColour(LED, channel, level)
             self.LEDs._set_item(i,new_colour[0],new_colour[1],new_colour[2],0)
-        self.LEDs.show()
+
+        if (LEDcommand.show):
+            self.LEDs.show()
 
     def channelSetLED(self, LEDcommand) -> None:
         led_idx = LEDcommand.led_index

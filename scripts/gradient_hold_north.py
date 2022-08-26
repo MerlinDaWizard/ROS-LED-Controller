@@ -13,8 +13,8 @@ import math
 import sys
 
 class HoldNorthDisplay():
-    def __init__(self, ledCount: int, inTopic: str, channel: int, outTopic = 'multichannel_set_led'):
-        rospy.init_node('static_displayer', anonymous=True)
+    def __init__(self, ledCount: int, inTopic: str, channel: int, outTopic: str = 'multichannel_set_led'):
+        rospy.init_node('angle_displayer', anonymous=True)
         self.ledCount = ledCount
         self.channel = channel
         self.formerLED = -1
@@ -39,22 +39,28 @@ class HoldNorthDisplay():
         
         angleDiff = self.startAngle - angle
         print(f"{angleDiff=}")
-        ledIndex = (self.angleToLED(angleDiff) + 77) % (self.ledCount) # Middle ish of a sector, its an odd number :/
-        #print(f"{ax=}")
-        #print(f"{ay=}")
-        #print(f"{az=}")
+        
+        ledIndex = (self.angleToLED(angleDiff) + 77) % (self.ledCount) # Middle ish of a sector, its an even number :/
         print(f"{ledIndex=}")
         print(f"{self.formerLED=}")
+        
         if (ledIndex != self.formerLED):
-            self.pub.publish(ledIndex,self.channel,50,True)
-            #if self.startup == False:
             if self.startup == False:
-                self.pub.publish(self.formerLED,self.channel,0,True)
+                self.pub.publish(self.formerLED,self.channel,0,False)
+                self.pub.publish((self.formerLED+1)%self.ledCount,self.channel,0,False)
+                self.pub.publish((self.formerLED-1)%self.ledCount,self.channel,0,False)
+            
+            self.pub.publish(ledIndex,self.channel,150,False)
+            self.pub.publish( (ledIndex+1)%self.ledCount, self.channel, 50, False)
+            self.pub.publish( (ledIndex-1)%self.ledCount, self.channel, 50, True)
+
             self.startup = False
             self.formerLED = ledIndex
 
-    def angleToLED(self,angle):
-        return int((angle / 360) * (self.ledCount-1))
+    def angleToLED(self, angle: float) -> int:
+        led_float = (angle / 360) * (self.ledCount-1)
+        print(f"{led_float=}")
+        return int(led_float)
 
 def euler_from_quaternion(x, y, z, w):
         """
