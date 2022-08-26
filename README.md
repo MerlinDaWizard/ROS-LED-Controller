@@ -11,8 +11,15 @@ If you are looking to do more complicated displays requiring a large amount of L
 2. Start the listener - `rosrun neopixel_controller listener.py [LED AMOUNT]` The listener default runs on the PWM 0 pin on raspis, will add cmdline argument in the future
 3. Run your script which publishes messages to the neopixels
 
+### Running Examples
+1. Make sure roscore is running
+2. Run the listener seperately (sudo -s, source /opt/ros/noetic/setup.sh, source your catkin ws, rosrun neopixel_controller listener.py)
+3. Roslaunch neopixel_controller (JoystickExample.launch|HoldNorthExample.launch)
+* Hold north requires turtlebot / other imu data
+
 ### Limitations 
-The listener is quite slow, from some quick tests it can run at around 20Hz, try not to make too many more messages than that as it will just start queueing them and then eventually discarding.
+If you write to the listener too much it may flash to the human eye, this is especially true if you are effecting all LEDs. 
+Listener must be ran as sudo, sudo -s then sourcing ros manually typically works well enough, if someone can find a way to circumvent this make a pull request / issue.
 
 ### Tips
 To apply to all LEDs use LEDcontroller.ALLLEDS as the index
