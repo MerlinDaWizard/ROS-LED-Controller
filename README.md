@@ -15,7 +15,8 @@ If you are looking to do more complicated displays requiring a large amount of L
 1. Make sure roscore is running
 2. Run the listener seperately (sudo -s, source /opt/ros/noetic/setup.sh, source your catkin ws, rosrun neopixel_controller listener.py)
 3. Roslaunch neopixel_controller (JoystickExample.launch|HoldNorthExample.launch)
-* Hold north requires turtlebot / other imu data
+
+\* Hold north requires turtlebot / other imu data
 
 ### Limitations 
 If you write to the listener too much it may flash to the human eye, this is especially true if you are effecting all LEDs. 
