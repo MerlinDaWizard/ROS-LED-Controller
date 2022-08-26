@@ -167,7 +167,7 @@ catkin_install_python(PROGRAMS
   scripts/filler.py
   # scripts/accelerometer.py
   scripts/hold_north.py
-  scripts/gradient_hold_north.py
+  #scripts/gradient_hold_north.py
   #scripts/tilt.py
   scripts/joystick_show.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

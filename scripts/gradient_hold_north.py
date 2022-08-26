@@ -1,3 +1,5 @@
+## This example is done in normal degrees, if you would like one in radians look at joystick_show.py
+## You can also replace the large euler_from_quaternion with tf.transformations
 
 ## When started it will set a datum at this point. We then use the IMU data 
 ## to attempt to keep a stable LED pointing in a direction
@@ -13,15 +15,15 @@ import math
 import sys
 
 class HoldNorthDisplay():
-    def __init__(self, ledCount: int, inTopic: str, channel: int, outTopic: str = 'multichannel_set_led'):
-        rospy.init_node('angle_displayer', anonymous=True)
-        self.ledCount = ledCount
+    def __init__(self, led_count: int, topic_in: str, channel: int, topic_out: str = 'multichannel_set_led'):
+        rospy.init_node('direction_displayer', anonymous=True)
+        self.led_count = led_count
         self.channel = channel
-        self.formerLED = -1
+#        self.formerLED = -1
         self.startup = True
-        rospy.Subscriber(inTopic, Imu, self.recieveImu)
-        rospy.loginfo(f"Listening on {inTopic}")
-        self.pub = rospy.Publisher(outTopic, LEDcommand, queue_size = 30)
+        rospy.Subscriber(topic_in, Imu, self.recieveImu)
+        rospy.loginfo(f"Listening on {topic_in}")
+        self.pub = rospy.Publisher(topic_out, LEDcommand, queue_size = 30)
 
     def recieveImu(self, imu: Imu) -> None:
         max_brightness = 200 # Constant
@@ -43,8 +45,8 @@ class HoldNorthDisplay():
         led_float = (self.angleToLED(angle_difference) + 77) # OFFSET
         led_intensity = int( (led_float % 1) * max_brightness)
 
-        led_idx_primary = math.floor(led_float) % self.ledCount
-        led_idx_secondary = (led_idx_primary + 1) % self.ledCount
+        led_idx_primary = math.floor(led_float) % self.led_count
+        led_idx_secondary = (led_idx_primary + 1) % self.led_count
 
         print(f"{led_intensity=}")
         print(f"{led_idx_primary=}")
@@ -62,7 +64,7 @@ class HoldNorthDisplay():
         self.startup = False
         
     def angleToLED(self, angle: float) -> float:
-        led_float = (angle / 360) * (self.ledCount-1)
+        led_float = (angle / 360) * (self.led_count-1)
         print(f"{led_float=}")
         return (led_float)
 
