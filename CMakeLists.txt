@@ -161,14 +161,15 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  scripts/talker.py
-  scripts/angular_talker.py
-  scripts/listenerOOP.py
+  scripts/random_set_example.py
+  # scripts/angular_talker.py
+  scripts/listener.py
   scripts/filler.py
-  scripts/accelerometer.py
+  # scripts/accelerometer.py
   scripts/hold_north.py
-  # scripts/add_two_ints_server.py
-  # scripts/add_two_ints_client.py
+  scripts/gradient_hold_north.py
+  #scripts/tilt.py
+  scripts/joystick_show.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
