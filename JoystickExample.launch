@@ -1,7 +1,7 @@
-<---->
+<!--REQUIRES A TURTLEBOT TO WORK, DESIGNED FOR 84 LEDS IN CIRCLE/HEXAGON -->
+<!--REMEMBER LISTENER NEEDS TO BE RAN WITH SUDO, NOT INCLUDED IN LAUNCH FILE -->
+<!--sudo rosrun neopixel_controller listener.py 84-->
 <launch>
-  <node name="turtleNode" pkg="turtlesim" type="turtlesim_node"/>
-  <node name="turtleMovement" pkg="turtlesim" type="turtle_teleop_key" output="screen"/>
-  <node name="poseThrottler" pkg="topic_tools" type="throttle" args="messages turtle1/pose 50.0"/>
-  <node name="poseToLED" pkg="neopixel_controller" type="angular_talker.py" output="screen"/>
+  <node name="JoystickDisplay" pkg="neopixel_controller" type="joystick_show.py" args="/led_joystick_throttle 2 36" output="screen"/>
+  <node name="JoystickThrottler" pkg="topic_tools" type="throttle" args="messages /led_joystick 50.0"/>
 </launch>

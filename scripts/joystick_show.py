@@ -8,28 +8,29 @@ from geometry_msgs.msg import Twist
 from neopixel_controller.msg import LEDcommand
 
 class JoystickDisplay():
-    def __init__(self, led_count: int, in_topic: str, channel: int, out_topic: str = 'multichannel_set_led'):
+    def __init__(self, led_count: int, in_topic: str, channel: int, offset: int, out_topic: str = 'multichannel_set_led'):
         rospy.init_node('joystick_displayer', anonymous=True)
+        self.offset = offset
         self.led_count = led_count
         self.channel = channel
         self.pub = rospy.Publisher(out_topic, LEDcommand, queue_size = 30)
         rospy.Subscriber(in_topic, Twist, self.recieveTwist)
         rospy.loginfo(f"Listening on {in_topic}")
-
+        self.former_led_idx = -1
     
     def recieveTwist(self, twist: Twist) -> None:
         x = twist.linear.x
         y = twist.linear.y
         print(f"{x:.4f}, {y:.4f}")
         angle_rad = math.atan2(x,y) + math.pi
-#        led_idx = (self.led_count - int( (angle_rad / (2*math.pi) ) * (self.led_count - 1) )) % self.led_count
-        led_idx = (int(self.led_count - (angle_rad / (2*math.pi)) * (self.led_count-1)) + 36) % self.led_count
-        print(f"{angle_rad=}")
-#        rad = asin(sqrt(math.pow(tan(roll),-1)+math.pow(tan(roll),-1)) /2)
-#        rad = (sqrt(math.pow(tan(roll),-1)+math.pow(tan(roll),-1)) /2)
-        print(f"{led_idx}")
-        self.pub.publish(LEDcommand.ALLLEDS,self.channel,0,False)
-        self.pub.publish(led_idx,self.channel,150,True)
+        
+        led_idx = (int(self.led_count - (angle_rad / (2*math.pi)) * (self.led_count-1)) + self.offset) % self.led_count # Offset may need changing depending on where you connect to your LEDs
+        print(f"{angle_rad=:0.4f}")
+        print(f"{led_idx=}")
+        if self.former_led_idx != led_idx:
+            self.pub.publish(LEDcommand.ALLLEDS,self.channel,0,False)
+            self.pub.publish(led_idx,self.channel,150,True)
+            self.former_led_idx = led_idx
 
 def getLEDCount() -> int:
     try:
@@ -44,18 +45,19 @@ def getLEDCount() -> int:
 
 def main() -> None:
     args = rospy.myargv(argv=sys.argv)
-    if len(args) != 3:
-        rospy.logfatal("Must have an intopic & channel specified as an argument")
+    if len(args) != 4:
+        rospy.logfatal("Must have an intopic, channel & offset specified as an argument")
         exit()
     in_topic = args[1]
     
     try:
         channel = int(args[2])
+        offset = int(args[3])
     except ValueError as e:
-        print("Cannot decode channel")
+        print("Cannot decode channel or offset")
         throw(e)
     led_count = getLEDCount()
-    disp = JoystickDisplay(led_count, in_topic, channel)
+    disp = JoystickDisplay(led_count, in_topic, channel, offset)
     rospy.spin()
 
 if __name__ == '__main__':

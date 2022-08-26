@@ -1,5 +1,5 @@
 import rospy
-from math import cos,asin,sqrt,tan
+from math import cos,asin,sqrt,tan,atan2,sin,cos
 import math
 import sys
 from tf.transformations import euler_from_quaternion
@@ -28,9 +28,11 @@ class TiltDisplay():
         d_pitch = pitch * degree_const
         print(f"{d_roll=}")
         print(f"{d_pitch=}")
+        rad = atan2(cos(yaw),sin(pitch))
+        
 #        rad = asin(sqrt(math.pow(tan(roll),-1)+math.pow(tan(roll),-1)) /2)
 #        rad = (sqrt(math.pow(tan(roll),-1)+math.pow(tan(roll),-1)) /2)
-        rad = cos(roll)/cos(pitch)
+#        rad = cos(roll)/cos(pitch)
         print(rad)
         print(math.degrees(rad))
 

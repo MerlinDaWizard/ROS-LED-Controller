@@ -1,0 +1,9 @@
+<!--REQUIRES A TURTLEBOT TO WORK, DESIGNED FOR 84 LEDS IN CIRCLE/HEXAGON -->
+<!--REMEMBER LISTENER NEEDS TO BE RAN WITH SUDO, NOT INCLUDED IN LAUNCH FILE -->
+<!--sudo rosrun neopixel_controller listener.py 84-->
+<launch>
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_robot.launch">
+  </include>
+  <node name="DirectionDisplay" pkg="neopixel_controller" type="gradient_hold_north.py" args="/imu_throttle 1" output="screen"/>
+  <node name="ImuThrottler" pkg="topic_tools" type="throttle" args="messages /imu 15.0"/>
+</launch>

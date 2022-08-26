@@ -24,43 +24,47 @@ class HoldNorthDisplay():
         self.pub = rospy.Publisher(outTopic, LEDcommand, queue_size = 30)
 
     def recieveImu(self, imu: Imu) -> None:
+        max_brightness = 200 # Constant
         orientation = imu.orientation
-        print(orientation)
-        #theta = math.acos(orientation.w)*2
-        #ax = orientation.x / math.sin(theta/2)
-        #ay = orientation.y / math.sin(theta/2)
-        #az = orientation.z / math.sin(theta/2)
+        print(orientation) 
         # RADIANS
         roll, pitch, yaw = euler_from_quaternion(orientation.x,orientation.y,orientation.z,orientation.w)
-        angle = (yaw*(180/math.pi) + 180)%360
+        # Yaw is both negative and positive, we convert it to degrees instead of radians then make sure it wraps around to 360
+        cur_angle = (yaw*(180/math.pi) + 180)%360
+        
+        # Calibrate start angle to calculate difference from
         if (self.startup):
-            self.startAngle = angle
+            self.start_angle = cur_angle
             #self.startup = False
         
-        angleDiff = self.startAngle - angle
-        print(f"{angleDiff=}")
+        angle_difference = self.start_angle - cur_angle
+        print(f"{angle_difference=}")
         
-        ledIndex = (self.angleToLED(angleDiff) + 77) % (self.ledCount) # Middle ish of a sector, its an even number :/
-        print(f"{ledIndex=}")
-        print(f"{self.formerLED=}")
+        led_float = (self.angleToLED(angle_difference) + 77) # OFFSET
+        led_intensity = int( (led_float % 1) * max_brightness)
+
+        led_idx_primary = math.floor(led_float) % self.ledCount
+        led_idx_secondary = (led_idx_primary + 1) % self.ledCount
+
+        print(f"{led_intensity=}")
+        print(f"{led_idx_primary=}")
         
-        if (ledIndex != self.formerLED):
-            if self.startup == False:
-                self.pub.publish(self.formerLED,self.channel,0,False)
-                self.pub.publish((self.formerLED+1)%self.ledCount,self.channel,0,False)
-                self.pub.publish((self.formerLED-1)%self.ledCount,self.channel,0,False)
+        if self.startup == False:
+            self.pub.publish(self.former_led_idx_primary, self.channel, 0, False)
+            self.pub.publish(self.former_led_idx_secondary, self.channel, 0, False)
+            #self.pub.publish((self.formerLED-1)%self.ledCount,self.channel,0,False)
             
-            self.pub.publish(ledIndex,self.channel,150,False)
-            self.pub.publish( (ledIndex+1)%self.ledCount, self.channel, 50, False)
-            self.pub.publish( (ledIndex-1)%self.ledCount, self.channel, 50, True)
-
-            self.startup = False
-            self.formerLED = ledIndex
-
-    def angleToLED(self, angle: float) -> int:
+        self.pub.publish( led_idx_primary, self.channel, (max_brightness - led_intensity), False)
+        self.pub.publish( led_idx_secondary, self.channel, led_intensity, True)
+        
+        self.former_led_idx_primary = led_idx_primary
+        self.former_led_idx_secondary = led_idx_secondary
+        self.startup = False
+        
+    def angleToLED(self, angle: float) -> float:
         led_float = (angle / 360) * (self.ledCount-1)
         print(f"{led_float=}")
-        return int(led_float)
+        return (led_float)
 
 def euler_from_quaternion(x, y, z, w):
         """
